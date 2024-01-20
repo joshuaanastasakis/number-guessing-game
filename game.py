@@ -26,10 +26,8 @@ def play(input_num):
 
   ## Set default progress
   progress = []
-  tmp_progress = []
   for i in range(0,length):
     progress.append('X')
-    tmp_progress.append('X')
 
   ## Repeatedly ask for a guess until  it's correct
   while done!=True:
@@ -42,7 +40,7 @@ def play(input_num):
     ## - if they need instrucctions: show instructions
 
     ## ask the user for their guess
-    guess = input("Enter your guess: ")
+    guess = input("Enter your guess:")
 
     ## add 1 to guess count
     count += 1
@@ -127,8 +125,14 @@ def rand_list(length, unique_digits):
 def main():
   instructions()
   print (" ")
+
+  ## Create variables to use as arguments to generate the random number
+  ## - digits: length of the random number
+  ## - unique_digits: if the number cannot have repeating digits
+  ## These will be updated once a valid level has been selected by the user
   digits = 0
   unique_digits = False
+
   level = int(input("how hard do you want the game to be? Level 1, 2, 3, 4, or 5?"))
   
   ## Loop until a level between 1 and 5 is selected
@@ -136,46 +140,77 @@ def main():
     if level == 1:
       print (" ")
       print ("your number is 3 digits long. None of the digits are the same number.")
+      
+      ## Update the variables for this level
       digits = 3
       unique_digits = True
+
+      ## break out of the loop
       break
       
     elif level == 2:
       print(" ")
       print ("your number is 4 digits long. None of the digits are the same number.")
+      
+      ## Update the variables for this level
       digits = 4
       unique_digits = True
+
+      ## break out of the loop
       break
       
     elif level == 3:
       print(" ")
       print ("your number is 4 digits long. None of the digits are the same number, but some of the digits could be spaces.")
+      
+      ## Update the variables for this level
       digits = 4
       unique_digits = True
+
+      ## break out of the loop
       break
       
     elif level == 4:
-      print("")
+      print(" ")
       print ("your number is 4 digits long. Some of the digits may be the same number.")
+      
+      ## Update the variables for this level
       digits = 4
       unique_digits = False
+
+      ## break out of the loop
       break
       
     elif level == 5:
-      print("")
+      print(" ")
       print ("your number is 5 digits long. Some of the digits may be the same number.")
-      unique_digits = False
+      
+      ## Update the variables for this level
       digits = 5
+      unique_digits = False
+
+      ## break out of the loop
       break
 
     else:
+      ## no valid level was entered
       print ("that is not a valid level")
       level = int(input("how hard do you want the game to be? Level 1, 2, 3, 4, or 5?"))
 
+      ## after the level is entered by the user, the loop will restart
+
+  ## once we have a valid level, we can generate the random number as a list of digits
+  ## we'll use the updated digits and unique_digits variables as arguments
   rand = rand_list(digits, unique_digits)
+
   # print('rand:', rand)
+  
+  ## convert the digits list to a string
   num = ''.join(rand)
+
   # print('rand joined:', num)
+
+  ## start the game
   play(num)
 
 
