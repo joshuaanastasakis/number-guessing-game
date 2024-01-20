@@ -13,6 +13,8 @@ def again():
     print ("thanks for playing")
 
 def play(input_num):
+  print('num:', input_num)
+
   ## create a copy of input number as a list
   num = list(input_num)
 
@@ -33,6 +35,10 @@ def play(input_num):
   while done!=True:
     ## add a new line to separate guesses
     print(" ")
+
+    guess_progress = []
+    for i in range(0,length):
+      guess_progress.append('X')
 
     ## TODO ask the user if they want to give up or need instructions
     ## choose which depending on the number of guesses so far (count)
@@ -65,17 +71,28 @@ def play(input_num):
     for i in range(0, length):
       for j in range(0, length):
         if i==j:
+          ## update guess progress
+          if input_num[i]==guess[j]:
+            guess_progress[j] = '0'
+          
+          ## update overall progress
           if num[i]==guess[j]:
             progress[j]='0'
             num[i]=' '
         else:
+          ## update guess progress
+          if input_num[i]==guess[j] or guess[j] in input_num:
+            guess_progress[j] = '_'
+
+          ## update overall progress
           if num[i]==guess[j]:
             if progress[j]!='0':
               progress[j]='_'
 
-    print('progress:\t ', ''.join(progress))
+    print('guess progress:\t', ''.join(guess_progress))
+    print()
+    print('progress:\t', ''.join(progress))
     # print('number:\t ', ''.join(num))
-
 
   if done:
     print("You guessed correctly!")
