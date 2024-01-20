@@ -11,73 +11,79 @@ def again():
     main()
   if again == "no":
     print ("thanks for playing")
-    
-def play(num, count, digits, code):
 
-  guess = int(input("Guess the number:"))
-  num_int = int(num)
-  if (guess == num_int):
-    print("Great! You guessed the number. You're a Mastermind!")
-    again()
+def play(input_num):
+  ## create a copy of input number as a list
+  num = list(input_num)
+
+  length = len(num)
+
+  ## use 'done' to break out of the loop if the number has been guessed correctly
+  done = False
+
+  ## count the number of guesses so far
+  count = 0
+
+  ## Set default progress
+  progress = []
+  tmp_progress = []
+  for i in range(0,length):
+    progress.append('X')
+    tmp_progress.append('X')
+
+  ## Repeatedly ask for a guess until  it's correct
+  while done!=True:
+    ## add a new line to separate guesses
+    print(" ")
+
+    ## TODO ask the user if they want to give up or need instructions
+    ## choose which depending on the number of guesses so far (count)
+    ## - if they choose to give up: exit the loop using the 'break' keyword (similar to the correct guess part below)
+    ## - if they need instrucctions: show instructions
+
+    ## ask the user for their guess
+    guess = input("Enter your guess: ")
+
+    ## add 1 to guess count
+    count += 1
+
+    ## if the length of the guess does not match the length of the number, restart the loop
+    if len(guess)!=length:
+      print("Your guess must be", length, ", digits long")
+      continue
+
+    ## if the guess is correct, break out of the loop
+    ## comparing to input_num because we're removing digits that were already correctly guessed from 'num'
+    if guess==input_num:
+      done=True
+      break;
+
+    ## if the guess is not a valid number, restart the loop
+    if not guess.isnumeric():
+      print("You must enter a valid number")
+      continue
+
+    ## compare the guess to the number
+    for i in range(0, length):
+      for j in range(0, length):
+        if i==j:
+          if num[i]==guess[j]:
+            progress[j]='0'
+            num[i]=' '
+        else:
+          if num[i]==guess[j]:
+            if progress[j]!='0':
+              progress[j]='_'
+
+    print('progress:\t ', ''.join(progress))
+    # print('number:\t ', ''.join(num))
+
+
+  if done:
+    print("You guessed correctly!")
   else:
-    #indices = [i for i, letter in enumerate(num) if num == guess]
-    #for index in indices:
-      #code[index] = guess
-    # num = "".join(code)
-    print (code)
-    print(num)
-    num_str = str(num)
-    guess_str = str(guess)
-    
-    if " " not in num:
-      for j in range(0, digits):
-        print("j", j)
-        #print (guess_str)
-        tmp_code = []
-        for i in range(0, len(guess_str)):
-          print ("i", i)
-          print ("compare" + num_str[j] + " " + guess_str[i])
-          if (guess_str[i] == num_str[j]) and j == i:
-              count += 1
-              code[i] = "O" 
-              num_list = list(num_str)
-              num_list[j] = "Q"
-              num_str = "".join(num_list)
-              print ("num_str", num_str)
-          elif (guess_str[i] == num_str[j]) and j!=i:
-            if code[i] != "O":
-              code[i] = "_"
-              count += 1
-          else:
-            if code[i] == "X":
-              code[i] = "X"
-              count += 1
-        print (code)
-        final = []
-        if len(tmp_code) == 0:
-          tmp_code = code
-        for c in range(0, 4):
-          print(c)
-          prv = tmp_code[c] 
-          cur = code[c]
-          if cur == "O":
-            final.append("O")
-          elif cur == "_":
-            if prv != "O":
-              final.append("_")
-          else:
-            final.append("X")
-        print (final)
-          
-        tmp_code = final
-        print ("best so far")
-        print (tmp_code)
-        play(num, count, digits, tmp_code)
-          
-  if guess == num:
-        count+=1
-        print("You've become a Mastermind!")
-        print("It took you only", count, "tries.")
+    print("You failed")
+
 
 def instructions():
   print ("the game is simple, there is a number, you must guess it.")
@@ -89,96 +95,89 @@ def instructions():
   print ("every 20 you will be given the option to to see the instructions again")
   print ("Are you ready to see if you are a mastermind?")
 
-def num_check(num): 
-  while num[0] == num[1] and num[0] == num[2] and num[0] == num [3]:
-    while num[1] == num[2] and num[1] == num[3] and num[2] == num[3]:
-      num = random.randrange(1000,9999)
-      num = str(num)
-      num_check(num)  
-  else:
-    return num
+
+## INPUT:
+## - target = the length of the digit list
+## - unique_digits = if the digits in the number have to be all different (True) or can repeat (False)
+## RETURN: list of random digits
+def rand_list(length, unique_digits):
+  ## create tmp list that'll hold the random digits
+  tmp = []
+
+  ## loop 'length' number of times, adding a add a random digit to the tmp list each time
+  for i in range(0, length):
+    
+    ## create random digit
+    rand = str(random.randrange(0,9))
+                                                                   
+    ## if the list can't have repeating digits and has at least 1 digit already
+    if unique_digits and len(tmp)>0:
+
+      ## if the rand digit is in the list already, generate a new one until it's not in the list
+      while rand in tmp:
+        rand = str(random.randrange(0,9))
+
+    ## add the random number to the list
+    tmp.append(rand)
+
+  ## return the list of random digits
+  return tmp
 
 
 def main():
   instructions()
   print (" ")
+  digits = 0
+  unique_digits = False
   level = int(input("how hard do you want the game to be? Level 1, 2, 3, 4, or 5?"))
-  if level == 1:
-    print (" ")
-    print ("your number is 3 digits long. None of the digits are the same number.")
-    digits = 3
-    num = random.randrange(100, 999)
-    num = str(num)
-    while num[0] == num[1] or num[0] == num[2] or num[1] == num[2]:
-      num = random.randrange(100, 999)
-      num = str(num)
-    print (num)
-    num = str(num)
-    count = 0
-    code = []
-    for d in range(0, digits):
-      code.append("X")
-    play(num, count, digits, code)
-    
-  elif level == 2:
-    print(" ")
-    print ("your number is 4 digits long. None of the digits are the same number.")
-    digits = 4
-    num = random.randrange(1000, 9999)
-    print (num)
-    num = str(num)
-    num_check(num)
-    print (num)
-    num = str(num)
-    count = 0
-    code = []
-    for d in range(0, digits):
-      code.append("X")
-    play(num, count, digits, code)
-    
-  elif level == 3:
-    print(" ")
-    print ("your number is 4 digits long. None of the digits are the same number, but some of the digits could be spaces.")
-    digits = 4
-    num = random.randrange(1000, 9999)
-    num = str(num)
-    print (num)
-    num_check(num)
-    count = 0
-    code = []
-    for d in range(0, digits):
-      code.append("X")
-    play(num, count, digits, code)
-    
-  elif level == 4:
-    print("")
-    print ("your number is 4 digits long. Some of the digits may be the same number.")
-    digits = 4
-    num = random.randrange(1000, 9999)
-    num = str(num)
-    print (num) #remove
-    count = 0
-    code = []
-    for d in range(0, digits):
-      code.append("X")
-    play(num, count, digits, code)
-    
-  elif level == 5:
-    print("")
-    print ("your number is 5 digits long. Some of the digits may be the same number.")
-    digits = 5
-    num = random.randrange(10000, 99999)
-    print (num)
-    num = str(num)
-    count = 0
-    code = []
-    for d in range(0, digits):
-      code.append("X")
-    play(num, count, digits, code)
+  
+  ## Loop until a level between 1 and 5 is selected
+  while True:
+    if level == 1:
+      print (" ")
+      print ("your number is 3 digits long. None of the digits are the same number.")
+      digits = 3
+      unique_digits = True
+      break
+      
+    elif level == 2:
+      print(" ")
+      print ("your number is 4 digits long. None of the digits are the same number.")
+      digits = 4
+      unique_digits = True
+      break
+      
+    elif level == 3:
+      print(" ")
+      print ("your number is 4 digits long. None of the digits are the same number, but some of the digits could be spaces.")
+      digits = 4
+      unique_digits = True
+      break
+      
+    elif level == 4:
+      print("")
+      print ("your number is 4 digits long. Some of the digits may be the same number.")
+      digits = 4
+      unique_digits = False
+      break
+      
+    elif level == 5:
+      print("")
+      print ("your number is 5 digits long. Some of the digits may be the same number.")
+      unique_digits = False
+      digits = 5
+      break
 
-  else:
-    print ("that is not a valid level")
-    level = int(input("how hard do you want the game to be? Level 1, 2, 3, 4, or 5?"))
+    else:
+      print ("that is not a valid level")
+      level = int(input("how hard do you want the game to be? Level 1, 2, 3, 4, or 5?"))
+
+  rand = rand_list(digits, unique_digits)
+  # print('rand:', rand)
+  num = ''.join(rand)
+  # print('rand joined:', num)
+  play(num)
+
 
 def repeat():
   repeat = input("Do you want to get the instructions again?")
